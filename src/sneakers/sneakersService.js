@@ -15,6 +15,7 @@ export const create = async (req, res) => {
 
 		let { name, price, color, sizes } = req.body
 		const images = req.files?.images
+		return res.json(images)
 
 		let sneakers = {}
 		sneakers.name = name
