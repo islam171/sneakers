@@ -15,7 +15,6 @@ export const create = async (req, res) => {
 
 		let { name, price, color, sizes } = req.body
 		const images = req.files?.images
-		return res.json(images)
 
 		let sneakers = {}
 		sneakers.name = name
@@ -81,8 +80,20 @@ const setOrder = order => {
 export const getAll = async (req, res) => {
 	try {
 		const { search, color, sort, order } = req.query
-		const limit = req.query?.limit || 10
-		const page = req.query?.page || 1
+		let limit = req.query?.limit || 10
+		let page = req.query?.page || 1
+
+		if (!isNaN(Number(limit))) {
+			limit = Number(limit)
+		} else {
+			limit = 10
+		}
+
+		if (!isNaN(Number(page))) {
+			page = Number(page)
+		} else {
+			page = 1
+		}
 
 		let filter = {}
 
@@ -99,7 +110,9 @@ export const getAll = async (req, res) => {
 			.sort(sortValues)
 			.populate('sizes')
 
-		res.json(sneakers)
+		const totalSneakers = await sneakersModel.find()
+
+		res.json({ sneakers, totalCount: totalSneakers.length })
 	} catch (e) {
 		errorBound(res, e)
 	}
@@ -119,7 +132,8 @@ export const remove = async (req, res) => {
 			fs.unlinkSync(image)
 		}
 
-		return res.json({ message: 'success' })
+		const doc = await sneakersModel.find().populate('sizes')
+		return res.json(doc)
 	} catch (error) {
 		errorBound(res, error)
 	}

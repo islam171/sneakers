@@ -1,4 +1,4 @@
-import { body } from 'express-validator'
+import { body, param } from 'express-validator'
 
 export const createSneakersValidation = [
 	body('name', 'Имя задано не корректно').notEmpty().trim().isString(),
@@ -6,6 +6,7 @@ export const createSneakersValidation = [
 	body('color').notEmpty().isMongoId(),
 	body('sizes').notEmpty(),
 ]
+export const getSneakersValidation = [param('page').isNumeric()]
 
 export const createSizeValidation = [body('name').isNumeric()]
 export const createColorValidation = [
